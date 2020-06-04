@@ -1,0 +1,23 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: kroniak/ssh-client #a free docker image
+    steps:
+      - checkout #
+      - run:
+          name: "Deploy koompiplay"
+          command: |
+            mkdir -p ~/.ssh && chmod 700 ~/.ssh
+            echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+            echo -e "Host *\n\tLogLevel ERROR\n\n" >> ~/.ssh/config
+            echo -e "Host *\n\tUserKnownHostsFile /dev/null\n\n" >> ~/.ssh/config
+            touch deploy
+            echo $production > deploy
+            chmod +x deploy
+            ./deploy
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - build
